@@ -9,4 +9,9 @@ export const API = {
     me: `${BASE_URL}/api/auth/me`,
     profile: `${BASE_URL}/api/auth/profile`,
   },
+  transactions: {
+    list: `${BASE_URL}/api/transactions`,
+    create: `${BASE_URL}/api/transactions/create`,
+    update: (id: string) => `${BASE_URL}/api/transactions/${id}`,
+  },
 };

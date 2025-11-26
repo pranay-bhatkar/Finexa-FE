@@ -4,6 +4,7 @@ interface User {
   id: string;
   name: string;
   email: string;
+  role: "admin" | "user";
 }
 
 interface AuthState {
@@ -18,6 +19,13 @@ export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   token: null,
 
-  login: (user, token) => set({ user, token }),
+  login: (user, token) =>
+    set({
+      user: {
+        ...user,
+        role: user.role.toLowerCase() as "admin" | "user",
+      },
+      token,
+    }),
   logout: () => set({ user: null, token: null }),
 }));
