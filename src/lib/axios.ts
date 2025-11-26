@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import { useAuthStore } from "@/store/auth/useAuthStore";
+import { API } from "@/config/api";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -62,17 +63,17 @@ api.interceptors.response.use(
 
       try {
         const refreshResponse = await axios.post(
-          `${import.meta.env.VITE_API_URL}/api/auth/refresh`,
+          API.auth.refresh,
           {},
           { withCredentials: true } // if BE sends refresh cookie
         );
 
         const newToken = refreshResponse.data.token;
-        
+
         // fetch user
-        const meResponse = await api.get("api/auth/me");
+        const meResponse = await api.get(API.auth.me);
         const refreshUser = meResponse.data;
-        
+
         useAuthStore.getState().login(refreshUser, newToken);
         localStorage.setItem("token", newToken);
 
