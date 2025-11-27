@@ -2,6 +2,7 @@ import axios from "axios";
 
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { API } from "@/config/api";
+import { ROUTES } from "@/constants/routes";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -51,7 +52,7 @@ api.interceptors.response.use(
     if (originalRequest._retry) {
       useAuthStore.getState().logout();
       localStorage.removeItem("token");
-      window.location.href = "/login";
+      window.location.href = ROUTES.AUTH.LOGIN;
       return Promise.reject(error);
     }
 
@@ -83,7 +84,7 @@ api.interceptors.response.use(
         isRefreshing = false;
         useAuthStore.getState().logout();
         localStorage.removeItem("token");
-        window.location.href = "/login";
+        window.location.href = ROUTES.AUTH.LOGIN;
         return Promise.reject(err);
       }
     }
@@ -91,7 +92,7 @@ api.interceptors.response.use(
     // queuq failed requests until refresh completes
     return new Promise((resolve) => {
       subscribeTokenRefresh((token: string) => {
-        originalRequest.headers["Authorizations"] = "Bearer " + token;
+        originalRequest.headers["Authorization"] = "Bearer " + token;
         resolve(api(originalRequest));
       });
     });
