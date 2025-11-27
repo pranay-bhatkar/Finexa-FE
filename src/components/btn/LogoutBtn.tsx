@@ -1,13 +1,14 @@
-import { useAuthStore } from "@/store/auth/useAuthStore";
-import { useNavigate } from "react-router-dom";
-import axios from "@/lib/axios"; // configured axios instance
 import { API } from "@/config/api";
-import { useState } from "react";
 import { ROUTES } from "@/constants/routes";
+import api from "@/lib/axios";
+import axios from "@/lib/axios"; // configured axios instance
+import { showError, showSuccess } from "@/lib/toast";
+import { useAuthStore } from "@/store/auth/useAuthStore";
+import { useState } from "react";
 
-export default function LogoutButton() {
+const LogoutButton = () => {
   const logoutStore = useAuthStore((state) => state.logout);
-  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
 
   const handleLogout = async () => {
@@ -16,16 +17,23 @@ export default function LogoutButton() {
       const refreshToken = localStorage.getItem("refreshToken"); // use refresh token
 
       if (refreshToken) {
-        await axios.post(API.auth.logout, { refreshToken });
+        await api.post(API.auth.logout, { refreshToken });
+        showSuccess("Logged out successfully!");
       }
     } catch (err) {
       console.error("Logout failed:", err);
+      showError(err instanceof Error ? err.message : "Failed to logout");
     } finally {
-      // clear state and storage
+      // Clear frontend state and storage
       logoutStore();
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
-      navigate(ROUTES.AUTH.LOGIN); // navigate to login page
+
+      delete axios.defaults.headers.common["Authorization"];
+
+      // 2. Fully reload the page to clear any in-memory caches, Axios headers, etc.
+
+      window.location.href = ROUTES.AUTH.LOGIN;
       setLoading(false);
     }
   };
@@ -39,4 +47,6 @@ export default function LogoutButton() {
       {loading ? "Logging out..." : "Logout"}
     </button>
   );
-}
+};
+
+export default LogoutButton;

@@ -8,6 +8,8 @@ import { useFormValidator } from "@/hooks/usFormValidator";
 import AuthLayout from "@/layout/AuthLayout";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { ROUTES } from "@/constants/routes";
+import { showError, showSuccess } from "@/lib/toast";
+import { AxiosError } from "axios";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email format"),
@@ -30,21 +32,20 @@ export default function Login() {
     if (!validate()) return;
 
     setLoading(true);
+
     try {
-      // Step 1: login to get access token
       const res = await authService.login(form);
 
       if (res.status === "success" && res.data?.token) {
         const token = res.data.token;
-        const refreshToken = res.data.refreshToken; // refresh token
-
+        const refreshToken = res.data.refreshToken;
         const user = res.data.user;
 
-        // store token in localStorage
+        // Store tokens
         localStorage.setItem("token", token);
         localStorage.setItem("refreshToken", refreshToken);
 
-        // store user + token in Zustand
+        // Zustand
         login(
           {
             id: user.id.toString(),
@@ -55,25 +56,36 @@ export default function Login() {
           token
         );
 
-        // navigate based on role
-        if (user.role.toLowerCase() === "admin") {
-          navigate(ROUTES.ADMIN_DASHBOARD);
-        } else {
-          navigate(ROUTES.DASHBOARD);
-        }
+        showSuccess("Login successful!");
+        navigate(
+          user.role.toLowerCase() === "admin"
+            ? ROUTES.ADMIN_DASHBOARD
+            : ROUTES.DASHBOARD
+        );
       } else {
-        alert(res.message || "Login failed");
+        showError(res.message || "Login failed");
       }
-    } catch (err) {
+    } catch (err: unknown) {
+      // Safe error handling
+      let message = "Login failed";
+
+      if (err instanceof AxiosError) {
+        // Backend error message
+        message = err.response?.data?.message || message;
+      } else if (err instanceof Error) {
+        message = err.message;
+      }
+
       console.error("Login failed:", err);
-      alert("Login failed. Check console for details.");
+      showError(message); // Shows "Invalid credentials" or "User not found"
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <AuthLayout title="Welcome Back" subtitle="Login to your Finexa account">
-      <form onSubmit={handleSubmit} className="space-y-6 text-white">
+      <form onSubmit={handleSubmit} className="space-y-6 text-white" noValidate>
         {/* Email */}
         <div>
           <label className="text-sm text-slate-200">Email</label>
@@ -114,9 +126,10 @@ export default function Login() {
 
         {/* Submit */}
         <motion.button
+          type="submit"
           whileTap={{ scale: 0.97 }}
           disabled={loading}
-          className="w-full py-3 bg-linear-to-r from-[#0A2540] to-[#00D1B2] text-white rounded-xl font-semibold shadow-lg hover:opacity-90 transition"
+          className="w-full py-3 bg-linear-to-r from-[#0A2540] to-[#00D1B2] text-white rounded-xl font-semibold shadow-lg hover:opacity-90 transition cursor-pointer"
         >
           {loading ? "Processing..." : "Login"}
         </motion.button>

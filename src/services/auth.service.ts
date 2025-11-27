@@ -1,5 +1,5 @@
 import { API } from "@/config/api";
-import axios from "axios";
+import api from "@/lib/axios";
 
 export interface LoginPayload {
   email: string;
@@ -30,12 +30,12 @@ export interface AuthResponse {
 
 export const authService = {
   login: async (payload: LoginPayload): Promise<AuthResponse> => {
-    const { data } = await axios.post<AuthResponse>(API.auth.login, payload);
+    const { data } = await api.post<AuthResponse>(API.auth.login, payload);
     return data;
   },
 
   register: async (payload: RegisterPayload): Promise<AuthResponse> => {
-    const { data } = await axios.post<AuthResponse>(API.auth.register, payload);
+    const { data } = await api.post<AuthResponse>(API.auth.register, payload);
     return data;
   },
 };

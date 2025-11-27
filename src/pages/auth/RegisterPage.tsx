@@ -3,9 +3,11 @@ import { Mail, Lock, User } from "lucide-react";
 import { z } from "zod";
 import { authService } from "@/services/auth.service";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormValidator } from "@/hooks/usFormValidator";
 import AuthLayout from "@/layout/AuthLayout";
+import { showError, showSuccess } from "@/lib/toast";
+import { ROUTES } from "@/constants/routes";
 
 const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -19,6 +21,7 @@ export default function Register() {
     { name: "", email: "", password: "" }
   );
 
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -28,7 +31,14 @@ export default function Register() {
     setLoading(true);
     try {
       const res = await authService.register(form);
-      console.log("Registration success:", res);
+
+      if (res.status === "success") {
+        showSuccess("Account created successfully!");
+        // Optionally redirect user to login page
+        navigate(ROUTES.AUTH.LOGIN);
+      } else {
+        showError(res.message || "Registration failed");
+      }
     } catch (err) {
       console.error("Register failed:", err);
     } finally {
@@ -103,7 +113,7 @@ export default function Register() {
         <motion.button
           whileTap={{ scale: 0.97 }}
           disabled={loading}
-          className="w-full py-3 bg-gradient-to-r from-[#0A2540] to-[#00D1B2] text-white rounded-xl font-semibold shadow-lg hover:opacity-90 transition"
+          className="w-full py-3 bg-linear-to-r from-[#0A2540] to-[#00D1B2] text-white rounded-xl font-semibold shadow-lg hover:opacity-90 transition"
         >
           {loading ? "Creating account..." : "Register"}
         </motion.button>

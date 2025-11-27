@@ -41,9 +41,13 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-
-    // correct condition
     const status = error.response?.status;
+
+    // Skip login request itself
+    if (originalRequest.url === API.auth.login) {
+      return Promise.reject(error); // let your handleSubmit handle it
+    }
+
     if (status !== 401) {
       return Promise.reject(error);
     }
