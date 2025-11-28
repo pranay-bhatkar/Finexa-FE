@@ -3,6 +3,7 @@ import { ROUTES } from "@/constants/routes";
 import { default as api } from "@/lib/axios";
 import { showError, showSuccess } from "@/lib/toast";
 import { useAuthStore } from "@/store/auth/useAuthStore";
+import { LogOut } from "lucide-react";
 import { useState } from "react";
 
 const LogoutButton = () => {
@@ -44,8 +45,16 @@ const LogoutButton = () => {
     <button
       onClick={handleLogout}
       disabled={loading}
-      className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded disabled:opacity-50"
+      className={`
+        flex items-center gap-2 justify-center
+        bg-brand-accent hover:bg-brand-accent/90
+        text-brand-midnight font-semibold
+        py-2 px-4 rounded md:w-full
+        disabled:opacity-50 disabled:cursor-not-allowed
+        transition-colors duration-200 cursor-pointer
+      `}
     >
+      <LogOut className="w-4 h-4" />
       {loading ? "Logging out..." : "Logout"}
     </button>
   );

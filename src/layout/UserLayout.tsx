@@ -5,7 +5,7 @@ export default function UserLayout() {
   return (
     <div className="flex">
       <Sidebar role="user" />
-      <main className="flex-1 p-6">
+      <main className="flex-1 p-6 md:ml-64">
         <Outlet />
       </main>
     </div>

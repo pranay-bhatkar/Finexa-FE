@@ -1,7 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-
 @theme {
+  /* Brand */
   --color-brand-primary: #0a0f29;
   --color-brand-primary-light: #141b3c;
   --color-brand-accent: #4ef1c7;
