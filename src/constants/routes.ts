@@ -12,6 +12,7 @@ export const ROUTES = {
     CATEGORIES: "/user/categories",
     PROFILE: "/user/profile",
     SETTINGS: "/user/settings",
+    NOTIFICATIONS: "/user/notifications",
   },
 
   ADMIN: {

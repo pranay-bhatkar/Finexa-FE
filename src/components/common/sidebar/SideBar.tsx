@@ -1,21 +1,24 @@
-import { NavLink } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
-import { type FC, useEffect, useState } from "react";
-import LogoutButton from "../btn/LogoutBtn";
 import { ROUTES } from "@/constants/routes";
 import {
+  Bell,
+  ChevronDown,
+  ChevronUp,
   HandCoins,
   LayoutDashboard,
+  type LucideIcon,
+  Menu,
   Settings,
   Tags,
   User,
   Users,
-  ChevronDown,
-  ChevronUp,
-  Menu,
   X,
 } from "lucide-react";
-import { type LucideIcon } from "lucide-react";
+import { type FC, useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
+import LogoutButton from "../../btn/LogoutBtn";
+import "./index.css";
+import { useNotifications } from "@/providers/NotificationProvider";
 
 interface SidebarProps {
   role: "admin" | "user";
@@ -31,6 +34,7 @@ interface LinkItem {
 const Sidebar: FC<SidebarProps> = ({ role }) => {
   const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({});
   const [mobileDrawer, setMobileDrawer] = useState(false);
+  const { unreadCount } = useNotifications();
 
   const toggleMenu = (name: string) => {
     setOpenMenus((prev) => ({ ...prev, [name]: !prev[name] }));
@@ -59,18 +63,23 @@ const Sidebar: FC<SidebarProps> = ({ role }) => {
       name: "Dashboard",
       path: ROUTES.USER.DASHBOARD,
       icon: LayoutDashboard,
-      children: [
-        {
-          name: "Overview",
-          path: ROUTES.USER.DASHBOARD,
-          icon: LayoutDashboard,
-        },
-      ],
+      // children: [
+      //   {
+      //     name: "Overview",
+      //     path: ROUTES.USER.DASHBOARD,
+      //     icon: LayoutDashboard,
+      //   },
+      // ],
     },
     { name: "Transactions", path: ROUTES.USER.TRANSACTIONS, icon: HandCoins },
     { name: "Categories", path: ROUTES.USER.CATEGORIES, icon: Tags },
     { name: "Profile", path: ROUTES.USER.PROFILE, icon: User },
     { name: "Settings", path: ROUTES.USER.SETTINGS, icon: Settings },
+    {
+      name: "Notifications",
+      path: ROUTES.USER.NOTIFICATIONS,
+      icon: Bell,
+    },
   ];
 
   const links = role === "admin" ? adminLinks : userLinks;
@@ -105,7 +114,7 @@ const Sidebar: FC<SidebarProps> = ({ role }) => {
 
           {/* Nested links */}
           <div
-            className={`flex flex-col pl-10 mt-1 overflow-hidden transition-all duration-300 ${
+            className={`flex flex-col pl-10 mt-1 overflow-hidden transition-all duration-300 overflow-y-auto scrollbar-hide ${
               isOpen ? "max-h-40" : "max-h-0"
             }`}
           >
@@ -131,6 +140,8 @@ const Sidebar: FC<SidebarProps> = ({ role }) => {
       );
     }
 
+    const isNotificationLink = link.name === "Notifications";
+
     // Normal link
     return (
       <NavLink
@@ -146,7 +157,17 @@ const Sidebar: FC<SidebarProps> = ({ role }) => {
         onClick={() => isMobile && setMobileDrawer(false)}
       >
         <link.icon className="w-5 h-5" />
-        <span>{link.name}</span>
+
+        {/* Text + Badge container */}
+        <div className="flex items-center gap-5">
+          <span>{link.name}</span>
+
+          {isNotificationLink && unreadCount > 0 && (
+            <span className="inline-flex items-center justify-center px-2 py-2 text-xs font-bold leading-none text-brand-primary bg-[#1EF1C7] rounded-full">
+              {unreadCount}
+            </span>
+          )}
+        </div>
       </NavLink>
     );
   };
@@ -194,7 +215,7 @@ const Sidebar: FC<SidebarProps> = ({ role }) => {
           mobileDrawer ? "translate-y-0" : "translate-y-full"
         } shadow-lg border-t border-brand-primary/30 max-h-[70%] overflow-y-auto`}
       >
-        <nav className="flex flex-col gap-1 p-4">
+        <nav className="flex flex-col gap-1 p-4 pb-20">
           {links.map((link) => renderLink(link, true))}
         </nav>
       </div>

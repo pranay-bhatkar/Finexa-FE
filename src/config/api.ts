@@ -10,6 +10,13 @@ export const API = {
     me: `${BASE_URL}/api/auth/me`,
     profile: `${BASE_URL}/api/auth/profile`,
   },
+
+  notification: {
+    unread: `${BASE_URL}/api/notifications/unread`,
+    markAsRead: (id: number) => `${BASE_URL}/api/notifications/read/${id}`,
+    markAsAllRead: `${BASE_URL}/notifications/read-all`,
+    delete: (id: number) => `${BASE_URL}/api/notifications/delete/${id}`,
+  },
   transactions: {
     list: `${BASE_URL}/api/transactions`,
     create: `${BASE_URL}/api/transactions/create`,
