@@ -8,11 +8,17 @@ interface PublicRouteProps {
 }
 
 const PublicRoute = ({ children }: PublicRouteProps) => {
-  const token = useAuthStore((state) => state.token);
+  const { token, user } = useAuthStore();
 
-  if (token) {
-    // User is logged in, redirect to dashboard
-    return <Navigate to={ROUTES.DASHBOARD} replace />;
+  if (token && user) {
+    return (
+      <Navigate
+        to={
+          user.role === "admin" ? ROUTES.ADMIN.DASHBOARD : ROUTES.USER.DASHBOARD
+        }
+        replace
+      />
+    );
   }
 
   return children;

@@ -1,18 +1,27 @@
-// global route paths
-
 export const ROUTES = {
   AUTH: {
     LOGIN: "/login",
     REGISTER: "/register",
     FORGOT_PASSWORD: "/forgot-password",
   },
-  DASHBOARD: "/dashboard",
-  ADMIN_DASHBOARD: "/admin",
-  PROFILE: "/profile",
-  TRANSACTIONS: "/transactions",
-  CATEGORIES: "/categories",
-  BUDGET: "/budget",
-  REPORTS: "/reports",
-  SETTINGS: "/settings",
-  NOT_FOUND: "*", // catch-all for 404
+
+  USER: {
+    ROOT: "/user",
+    DASHBOARD: "/user/dashboard",
+    TRANSACTIONS: "/user/transactions",
+    CATEGORIES: "/user/categories",
+    PROFILE: "/user/profile",
+    SETTINGS: "/user/settings",
+  },
+
+  ADMIN: {
+    ROOT: "/admin",
+    DASHBOARD: "/admin/dashboard",
+    USERS: "/admin/users",
+    SETTINGS: "/admin/settings",
+    PROFILE: "/admin/profile",
+  },
+
+  LANDING: "/",
+  NOT_FOUND: "*",
 };
