@@ -59,8 +59,8 @@ export default function Login() {
         showSuccess("Login successful!");
         navigate(
           user.role.toLowerCase() === "admin"
-            ? ROUTES.ADMIN_DASHBOARD
-            : ROUTES.DASHBOARD
+            ? ROUTES.ADMIN.DASHBOARD
+            : ROUTES.USER.DASHBOARD
         );
       } else {
         showError(res.message || "Login failed");

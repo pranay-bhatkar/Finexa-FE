@@ -20,7 +20,9 @@ const PrivateRoute = ({ children, allowedRoles }: PrivateRouteProps) => {
     // redirect user to their "default" dashboard based on role
     return (
       <Navigate
-        to={user.role === "admin" ? "/admin" : ROUTES.DASHBOARD}
+        to={
+          user.role === "admin" ? ROUTES.ADMIN.DASHBOARD : ROUTES.USER.DASHBOARD
+        }
         replace
       />
     );

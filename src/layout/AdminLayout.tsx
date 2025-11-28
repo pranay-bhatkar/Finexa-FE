@@ -1,15 +1,13 @@
 import Sidebar from "@/components/common/SideBar";
-import type { ReactNode } from "react";
+import { Outlet } from "react-router-dom";
 
-interface AdminLayoutProps {
-  children: ReactNode;
-}
-
-export default function AdminLayout({ children }: AdminLayoutProps) {
+export default function AdminLayout() {
   return (
     <div className="flex">
       <Sidebar role="admin" />
-      <main className="flex-1 p-6">{children}</main>
+      <main className="flex-1 p-6">
+        <Outlet />
+      </main>
     </div>
   );
 }

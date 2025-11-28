@@ -1,7 +1,6 @@
 import { API } from "@/config/api";
 import { ROUTES } from "@/constants/routes";
-import api from "@/lib/axios";
-import axios from "@/lib/axios"; // configured axios instance
+import { default as api } from "@/lib/axios";
 import { showError, showSuccess } from "@/lib/toast";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useState } from "react";
@@ -10,6 +9,8 @@ const LogoutButton = () => {
   const logoutStore = useAuthStore((state) => state.logout);
 
   const [loading, setLoading] = useState(false);
+
+  // const navigate = useNavigate();
 
   const handleLogout = async () => {
     setLoading(true);
@@ -29,11 +30,12 @@ const LogoutButton = () => {
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
 
-      delete axios.defaults.headers.common["Authorization"];
+      // delete axios.defaults.headers.common["Authorization"];
 
       // 2. Fully reload the page to clear any in-memory caches, Axios headers, etc.
 
       window.location.href = ROUTES.AUTH.LOGIN;
+      // navigate(ROUTES.AUTH.LOGIN);
       setLoading(false);
     }
   };

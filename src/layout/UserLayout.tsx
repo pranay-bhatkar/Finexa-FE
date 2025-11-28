@@ -1,15 +1,13 @@
 import Sidebar from "@/components/common/SideBar";
-import type { ReactNode } from "react";
+import { Outlet } from "react-router-dom";
 
-interface UserLayoutProps {
-  children: ReactNode;
-}
-
-export default function UserLayout({ children }: UserLayoutProps) {
+export default function UserLayout() {
   return (
     <div className="flex">
       <Sidebar role="user" />
-      <main className="flex-1 p-6">{children}</main>
+      <main className="flex-1 p-6">
+        <Outlet />
+      </main>
     </div>
   );
 }
