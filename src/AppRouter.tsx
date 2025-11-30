@@ -14,6 +14,7 @@ import NotificationsPage from "./pages/notofications/NotificationPage";
 import { useAuthStore } from "./store/auth/useAuthStore";
 import PrivateRoute from "./wrappers/PrivateRoutes";
 import PublicRoute from "./wrappers/PublicRoute";
+import ProfilePage from "./pages/profile/Profilepage";
 
 const AppRouter = () => {
   const RootRedirect = () => {
@@ -85,7 +86,7 @@ const AppRouter = () => {
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="transactions" element={<div>Transaction Page</div>} />
           <Route path="categories" element={<div>Category Page</div>} />
-          <Route path="profile" element={<div>Profile Page</div>} />
+          <Route path="profile" element={<ProfilePage />} />
           <Route path="settings" element={<div>Settings Page</div>} />
           <Route path="notifications" element={<NotificationsPage />} />
         </Route>

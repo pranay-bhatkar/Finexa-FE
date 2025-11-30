@@ -8,7 +8,7 @@ export const API = {
     logout: `${BASE_URL}/api/auth/logout`, //post
     register: `${BASE_URL}/api/auth/register`, // post
     refresh: `${BASE_URL}/api/auth/refresh`, //post
-    me: `${BASE_URL}/api/auth/me`, // get
+    me: `${BASE_URL}/api/auth/currentUser`, // get
     forgotPassword: `${BASE_URL}/api/auth/forgot-password`, // post
     resetPassword: `${BASE_URL}/api/auth/reset-password`, //post
   },
@@ -31,7 +31,7 @@ export const API = {
     updateUserByID: (id: number) => `${BASE_URL}/api/users/${id}`, // patch
     deleteUserByID: (id: number) => `${BASE_URL}/api/users/${id}`, // delete
     deleteAllUsers: `${BASE_URL}/api/users`, // delete // reuired= alse
-    updateProfile: `${BASE_URL}/api/users/me`, // patch
+    updateProfile: `${BASE_URL}/api/users/updateProfile`, // patch
   },
 
   /* ---------------------------- transaction apis ---------------------------- */
