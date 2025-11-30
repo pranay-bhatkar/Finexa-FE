@@ -1,19 +1,14 @@
-import { useState } from "react";
-import { Mail, Lock, User } from "lucide-react";
-import { z } from "zod";
-import { authService } from "@/services/auth.service";
-import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
+import { Input } from "@/components/ui/input";
+import { ROUTES } from "@/constants/routes";
 import { useFormValidator } from "@/hooks/usFormValidator";
 import AuthLayout from "@/layout/AuthLayout";
 import { showError, showSuccess } from "@/lib/toast";
-import { ROUTES } from "@/constants/routes";
-
-const registerSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Enter a valid email"),
-  password: z.string().min(4, "Password must be at least 4 characters"),
-});
+import { registerSchema } from "@/schema/auth/register.schema";
+import { authService } from "@/services/auth.service";
+import { motion } from "framer-motion";
+import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Register() {
   const { form, onChange, errors, validate } = useFormValidator(
@@ -23,6 +18,7 @@ export default function Register() {
 
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +50,7 @@ export default function Register() {
       <form onSubmit={handleRegister} className="space-y-6 text-white">
         {/* Full Name */}
         <div>
-          <label className="text-sm text-slate-200">Full Name</label>
+          <label className="text-sm text-slate-200">Name</label>
           <div className="flex items-center bg-white/10 border border-white/20 rounded-xl p-3 mt-1">
             <User className="text-white/60 w-5 h-5" />
             <input
@@ -62,6 +58,7 @@ export default function Register() {
               value={form.name}
               onChange={onChange}
               type="text"
+              autoComplete="off"
               placeholder="Enter your name"
               className="bg-transparent text-white w-full outline-none ml-3 placeholder-white/40"
             />
@@ -81,6 +78,7 @@ export default function Register() {
               value={form.email}
               onChange={onChange}
               type="email"
+              autoComplete="off"
               placeholder="Enter your email"
               className="bg-transparent text-white w-full outline-none ml-3 placeholder-white/40"
             />
@@ -93,19 +91,34 @@ export default function Register() {
         {/* Password */}
         <div>
           <label className="text-sm text-slate-200">Password</label>
+
           <div className="flex items-center bg-white/10 border border-white/20 rounded-xl p-3 mt-1">
             <Lock className="text-white/60 w-5 h-5" />
+
             <input
               name="password"
+              type={showPassword ? "text" : "password"}
               value={form.password}
               onChange={onChange}
-              type="password"
-              placeholder="Create a password"
+              placeholder="Enter your Password"
               className="bg-transparent text-white w-full outline-none ml-3 placeholder-white/40"
             />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-12 text-white/60 hover:text-white cursor-pointer"
+            >
+              {showPassword ? (
+                <EyeOff className="w-5 h-5" />
+              ) : (
+                <Eye className="w-5 h-5" />
+              )}
+            </button>
           </div>
+
           {errors.password && (
-            <p className="text-red-400 text-sm mt-1">{errors.password[0]}</p>
+            <p className="text-red-400 text-sm">{errors.password[0]}</p>
           )}
         </div>
 

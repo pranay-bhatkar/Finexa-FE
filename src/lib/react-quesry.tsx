@@ -3,9 +3,18 @@ import { QueryClient } from "@tanstack/react-query";
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 1, // retry once on failur
-      refetchOnWindowFocus: false, // prevents refetch every time tab focus
-      staleTime: 5 * 60 * 1000, // 5 min cache
+      retry: 1,
+      refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000,
     },
   },
 });
+
+declare global {
+  interface Window {
+    __TANSTACK_QUERY_CLIENT__: import("@tanstack/query-core").QueryClient;
+  }
+}
+
+// This code is for all users
+window.__TANSTACK_QUERY_CLIENT__ = queryClient;

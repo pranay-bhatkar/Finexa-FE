@@ -27,6 +27,11 @@ export interface AuthResponse {
   };
   statusCode?: number;
 }
+export interface ResetPassowrd {
+  email: string;
+  otp: string;
+  newPassword: string;
+}
 
 export const authService = {
   login: async (payload: LoginPayload): Promise<AuthResponse> => {
@@ -36,6 +41,16 @@ export const authService = {
 
   register: async (payload: RegisterPayload): Promise<AuthResponse> => {
     const { data } = await api.post<AuthResponse>(API.auth.register, payload);
+    return data;
+  },
+
+  forgotPassword: async (email: string) => {
+    const { data } = await api.post(API.auth.forgotPassword, { email });
+    return data;
+  },
+
+  resetPassword: async (payload: ResetPassowrd) => {
+    const { data } = await api.post(API.auth.resetPassword, payload);
     return data;
   },
 };

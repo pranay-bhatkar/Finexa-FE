@@ -1,23 +1,19 @@
-import { useState } from "react";
-import { Mail, Lock } from "lucide-react";
-import { z } from "zod";
-import { authService } from "@/services/auth.service";
-import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
 import { useFormValidator } from "@/hooks/usFormValidator";
 import AuthLayout from "@/layout/AuthLayout";
-import { useAuthStore } from "@/store/auth/useAuthStore";
-import { ROUTES } from "@/constants/routes";
 import { showError, showSuccess } from "@/lib/toast";
+import { loginSchema } from "@/schema/auth/login.schema";
+import { authService } from "@/services/auth.service";
+import { useAuthStore } from "@/store/auth/useAuthStore";
 import { AxiosError } from "axios";
-
-const loginSchema = z.object({
-  email: z.string().email("Invalid email format"),
-  password: z.string().min(4, "Password must be at least 4 characters"),
-});
+import { motion } from "framer-motion";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
   const navigate = useNavigate();
+
   const { form, onChange, errors, validate } = useFormValidator(loginSchema, {
     email: "",
     password: "",
@@ -26,6 +22,8 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const login = useAuthStore((state) => state.login);
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,6 +91,7 @@ export default function Login() {
             <Mail className="text-white/60 w-5 h-5" />
             <input
               name="email"
+              autoComplete="off"
               value={form.email}
               onChange={onChange}
               type="email"
@@ -106,21 +105,38 @@ export default function Login() {
         </div>
 
         {/* Password */}
+
         <div>
           <label className="text-sm text-slate-200">Password</label>
+
           <div className="flex items-center bg-white/10 border border-white/20 rounded-xl p-3 mt-1">
             <Lock className="text-white/60 w-5 h-5" />
+
             <input
               name="password"
+              type={showPassword ? "text" : "password"}
               value={form.password}
               onChange={onChange}
-              type="password"
-              placeholder="Enter your password"
+              placeholder="Enter your Password"
+              
               className="bg-transparent text-white w-full outline-none ml-3 placeholder-white/40"
             />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-12 text-white/60 hover:text-white cursor-pointer"
+            >
+              {showPassword ? (
+                <EyeOff className="w-5 h-5" />
+              ) : (
+                <Eye className="w-5 h-5" />
+              )}
+            </button>
           </div>
+
           {errors.password && (
-            <p className="text-red-400 text-sm mt-1">{errors.password[0]}</p>
+            <p className="text-red-400 text-sm">{errors.password[0]}</p>
           )}
         </div>
 
@@ -134,10 +150,19 @@ export default function Login() {
           {loading ? "Processing..." : "Login"}
         </motion.button>
 
+        <div>
+          <Link
+            to={ROUTES.AUTH.FORGOT_PASSWORD}
+            className="text-white font-semibold hover:underline"
+          >
+            Forgot Password
+          </Link>
+        </div>
+
         <p className="text-center text-slate-300">
           Don't have an account?{" "}
           <Link
-            to="/register"
+            to={ROUTES.AUTH.REGISTER}
             className="text-white font-semibold hover:underline"
           >
             Register

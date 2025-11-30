@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { type FC, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import LogoutButton from "../../btn/LogoutBtn";
+import LogoutButton from "../btn/LogoutBtn";
 import "./index.css";
 import { useNotifications } from "@/providers/NotificationProvider";
 
@@ -56,6 +56,7 @@ const Sidebar: FC<SidebarProps> = ({ role }) => {
     { name: "Users", path: ROUTES.ADMIN.USERS, icon: Users },
     { name: "Settings", path: ROUTES.ADMIN.SETTINGS, icon: Settings },
     { name: "Profile", path: ROUTES.ADMIN.PROFILE, icon: User },
+    { name: "Notifications", path: ROUTES.ADMIN.NOTIFICATIONS, icon: Bell },
   ];
 
   const userLinks: LinkItem[] = [

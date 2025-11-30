@@ -1,14 +1,14 @@
 import axios from "axios";
 
-import { useAuthStore } from "@/store/auth/useAuthStore";
 import { API } from "@/config/api";
-import { ROUTES } from "@/constants/routes";
+import { useAuthStore } from "@/store/auth/useAuthStore";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   timeout: 15000,
 });
 
+// TOKEN REFRESH QUEUE
 let isRefreshing = false;
 let refreshSubscriber: ((token: string) => void)[] = [];
 
@@ -36,12 +36,29 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+const PUBLIC_ROUTES = [
+  API.auth.login,
+  API.auth.forgotPassword,
+  API.auth.resetPassword,
+  API.auth.register,
+];
+
 // response interceptor
 api.interceptors.response.use(
   (response) => response,
+
   async (error) => {
     const originalRequest = error.config;
     const status = error.response?.status;
+
+    // If endpoint is PUBLIC → DO NOT refresh token
+    const isPublicRoute = PUBLIC_ROUTES.some((route) =>
+      originalRequest.url?.includes(route)
+    );
+
+    if (isPublicRoute) {
+      return Promise.reject(error); // pass original "Invalid OTP" error
+    }
 
     // Skip login request itself
     if (originalRequest.url === API.auth.login) {
@@ -55,8 +72,8 @@ api.interceptors.response.use(
     // Prevent infinite loop
     if (originalRequest._retry) {
       useAuthStore.getState().logout();
-      localStorage.removeItem("token");
-      window.location.href = ROUTES.AUTH.LOGIN;
+      // localStorage.removeItem("token");
+      // window.location.href = ROUTES.AUTH.LOGIN;
       return Promise.reject(error);
     }
 
@@ -67,6 +84,7 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
+        // hit refresh token endpoint
         const refreshResponse = await axios.post(
           API.auth.refresh,
           {},
@@ -80,15 +98,16 @@ api.interceptors.response.use(
         const refreshUser = meResponse.data;
 
         useAuthStore.getState().login(refreshUser, newToken);
-        localStorage.setItem("token", newToken);
+
+        // localStorage.setItem("token", newToken);
 
         isRefreshing = false;
         onRefreshed(newToken);
       } catch (err) {
         isRefreshing = false;
         useAuthStore.getState().logout();
-        localStorage.removeItem("token");
-        window.location.href = ROUTES.AUTH.LOGIN;
+        // localStorage.removeItem("token");
+        // window.location.href = ROUTES.AUTH.LOGIN;
         return Promise.reject(err);
       }
     }
@@ -96,7 +115,7 @@ api.interceptors.response.use(
     // queuq failed requests until refresh completes
     return new Promise((resolve) => {
       subscribeTokenRefresh((token: string) => {
-        originalRequest.headers["Authorization"] = "Bearer " + token;
+        originalRequest.headers.Authorization = `Bearer ${token}`;
         resolve(api(originalRequest));
       });
     });

@@ -5,7 +5,7 @@ export default function AdminLayout() {
   return (
     <div className="flex">
       <Sidebar role="admin" />
-      <main className="flex-1 p-6">
+      <main className="flex-1 md:ml-64">
         <Outlet />
       </main>
     </div>

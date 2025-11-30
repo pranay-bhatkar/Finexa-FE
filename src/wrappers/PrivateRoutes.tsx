@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/store/auth/useAuthStore";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
 import type { JSX } from "react";
 
@@ -10,9 +10,13 @@ interface PrivateRouteProps {
 
 const PrivateRoute = ({ children, allowedRoles }: PrivateRouteProps) => {
   const { token, user } = useAuthStore();
+  const location = useLocation();
 
   if (!token || !user) {
     // not logged in
+    if(location.pathname === ROUTES.AUTH.LOGIN){
+      return children;
+    }
     return <Navigate to={ROUTES.AUTH.LOGIN} replace />;
   }
 

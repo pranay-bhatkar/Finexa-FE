@@ -5,6 +5,7 @@ import UserLayout from "./layout/UserLayout";
 import ForgotPasswordPage from "./pages/auth/ForgotPassword";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
+import ResetPasswordPage from "./pages/auth/ResetPassword";
 import AdminDashboardPage from "./pages/dashboard/AdminDashboard";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import LandingPage from "./pages/LandingPage";
@@ -61,6 +62,14 @@ const AppRouter = () => {
             </PublicRoute>
           }
         />
+        <Route
+          path={ROUTES.AUTH.RESET_PASSWORD}
+          element={
+            <PublicRoute>
+              <ResetPasswordPage />
+            </PublicRoute>
+          }
+        />
 
         {/* Protected Routes */}
 
@@ -94,6 +103,7 @@ const AppRouter = () => {
           <Route path="users" element={<div>Users Page</div>} />
           <Route path="settings" element={<div>Settings Page</div>} />
           <Route path="profile" element={<div>Profile Page</div>} />
+          <Route path="notifications" element={<NotificationsPage />} />
         </Route>
 
         {/* 404 */}

@@ -5,7 +5,6 @@ const App = () => {
   return (
     <>
       <AppRouter />
-
       {/* Toaster */}
       <Toaster position="top-right" />
     </>

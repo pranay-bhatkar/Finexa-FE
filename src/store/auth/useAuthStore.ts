@@ -14,17 +14,31 @@ interface AuthState {
   logout: () => void;
 }
 
+// Helper to normalize localStorage user
+const getStoredUser = () => {
+  const raw = localStorage.getItem("user");
+  if (!raw) return null;
+
+  const parsed = JSON.parse(raw);
+
+  return {
+    ...parsed,
+    role: parsed.role.toLowerCase(), // normalize here
+  } as User;
+};
+
 export const useAuthStore = create<AuthState>((set) => ({
-  user: localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user")!)
-    : null,
+  user: getStoredUser(),
   token: localStorage.getItem("token") || null,
 
   login: (user, token) => {
-    set({
-      user: { ...user, role: user.role.toLowerCase() as "admin" | "user" },
-      token,
-    });
+    const normalized = {
+      ...user,
+      role: user.role.toLowerCase() as "admin" | "user",
+    };
+
+    set({ user: normalized, token });
+    
     localStorage.setItem("token", token);
     localStorage.setItem("user", JSON.stringify(user));
   },

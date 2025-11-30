@@ -3,6 +3,7 @@ export const ROUTES = {
     LOGIN: "/login",
     REGISTER: "/register",
     FORGOT_PASSWORD: "/forgot-password",
+    RESET_PASSWORD:"/reset-password"
   },
 
   USER: {
@@ -21,6 +22,7 @@ export const ROUTES = {
     USERS: "/admin/users",
     SETTINGS: "/admin/settings",
     PROFILE: "/admin/profile",
+    NOTIFICATIONS: "/admin/notifications",
   },
 
   LANDING: "/",
